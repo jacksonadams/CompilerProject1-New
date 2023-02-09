@@ -1,16 +1,36 @@
 package com.mycompany.compilerproject1_new;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+
 
 /**
  *
- * @author jacksonadams
+ * @author Jackson Adams, Scott Gocon
  */
 public class Main {
     public static void main(String[] args) {
+        BufferedReader fileReader = null;
+        CMinusScanner customScanner  = null;
         
+        // Try to open the input file then scan it with our scanner
+        try {
+            String curLine;
+
+            fileReader = new BufferedReader(new FileReader("input.txt"));
+            
+            // Instantiate our CMinusScanner
+            customScanner = new CMinusScanner(fileReader);
+
+        } 
+        
+        // Catch any errors in opening the file
+        catch (IOException e) {
+            e.printStackTrace();
+        } 
+        
+        // ;
     }
 }
