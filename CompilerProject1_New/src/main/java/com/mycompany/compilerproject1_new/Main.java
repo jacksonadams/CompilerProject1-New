@@ -30,7 +30,7 @@ public class Main {
         
         // Print the tokens into the output file
         int debugLoopCount = 5;             // Until we can test for the EOF, it will try printing the first 5 tokens
-        while(debugLoopCount >= 0){
+        while(debugLoopCount > 0){
             outputFile.write(nextToken.toString());
             debugLoopCount--;
         }
