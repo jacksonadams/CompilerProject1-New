@@ -59,8 +59,8 @@ public class Token {
         return tokenType;
     }
     
-    public Object getData(){
-        return tokenData;
+    public void setData(Object data){
+        tokenData = data;
     }
     
     public String toString (){
@@ -68,7 +68,7 @@ public class Token {
         
         returnString += tokenType;
         if(tokenData != null){
-            returnString += tokenData;
+            returnString += " " + tokenData;
         }
         returnString += "\n";
         
