@@ -10,27 +10,35 @@ import java.io.IOException;
  *
  * @author Jackson Adams, Scott Gocon
  */
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+
 public class Main {
-    public static void main(String[] args) {
-        BufferedReader fileReader = null;
-        CMinusScanner customScanner  = null;
         
-        // Try to open the input file then scan it with our scanner
-        try {
-            String curLine;
-
-            fileReader = new BufferedReader(new FileReader("input.txt"));
+    public static void main(String[] args) throws FileNotFoundException, IOException {
+        // Get the input file that has the C- code
+        File inputFile = new File("src/main/java/com/mycompany/compilerproject1_new/input.txt");
+        FileReader codeFile = new FileReader(inputFile);
+        BufferedReader inputReader = new BufferedReader(codeFile);
+        
+        CMinusScanner myScanner = new CMinusScanner(inputReader);
+        
+        // Print the C- code's tokens into an output file
+        Token next = myScanner.viewNextToken();
+        while(next.getType() != Token.TokenType.ERROR_TOKEN){
             
-            // Instantiate our CMinusScanner
-            customScanner = new CMinusScanner(fileReader);
-
+            PrintStream outputFile = new PrintStream(new File("output.txt"));
+            PrintStream console = System.out;
+            System.setOut(outputFile);
+            
+            next.printToken();
+            
+            next = myScanner.getNextToken();
         } 
-        
-        // Catch any errors in opening the file
-        catch (IOException e) {
-            e.printStackTrace();
-        } 
-        
-        // ;
     }
 }

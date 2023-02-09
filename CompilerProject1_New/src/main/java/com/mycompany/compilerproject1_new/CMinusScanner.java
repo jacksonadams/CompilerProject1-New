@@ -26,8 +26,12 @@ public class CMinusScanner implements Scanner {
     
     public Token getNextToken () {
         Token returnToken = nextToken;
-        if(nextToken.getType() != Token.TokenType.EOF_TOKEN){
-            nextToken = scanToken();
+        if(nextToken.getType() != TokenType.EOF_TOKEN){
+            try {
+                nextToken = scanToken();
+            } catch (IOException ex) {
+                System.out.println("exception");
+            }
         }
         return returnToken;
     }
@@ -57,6 +61,10 @@ public class CMinusScanner implements Scanner {
             // Get next character
             char c = (char)(inFile.read());
             
+            
+            System.out.println("state: " + state);
+            System.out.println("c: " + c);
+            
             // Loop through all possible states
             switch(state){
                 case START:
@@ -74,6 +82,8 @@ public class CMinusScanner implements Scanner {
                         state = StateType.INEQUAL;
                     } else if (c == '/'){
                         state = StateType.INDIVIDE;
+                    } else if (c == ' ' || c == '\t' || c == '\n'){
+                        // nothing
                     } else {
                         state = StateType.DONE;
                         switch(c){
@@ -190,6 +200,8 @@ public class CMinusScanner implements Scanner {
         }
        
         Token returnToken = new Token(currentToken);
+        
+        //System.out.println("currentToken at end of function:" + currentToken + "\n\n");
         return returnToken;
     }
 }
