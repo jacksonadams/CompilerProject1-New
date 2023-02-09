@@ -33,7 +33,7 @@ public class Main {
         
         Token next = myScanner.getNextToken();
         while(next.getType() != TokenType.EOF_TOKEN){
-            outputFile.write(next.printToken() + "\n");
+            outputFile.write(next.toString());
             next = myScanner.getNextToken();
         }
         
