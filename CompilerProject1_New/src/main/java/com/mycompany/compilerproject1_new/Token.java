@@ -58,4 +58,8 @@ public class Token {
     public TokenType getType (){
         return tokenType;
     }
+    
+    public void printToken (){
+        System.out.println(tokenType + " : " + tokenData);
+    }
 }
