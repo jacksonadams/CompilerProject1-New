@@ -56,14 +56,18 @@ public class CMinusScanner implements Scanner {
     public Token scanToken() throws IOException {
         TokenType currentToken = TokenType.ERROR_TOKEN;
         StateType state = StateType.START;
+        
+        char c;
+        String data = "";
 
         while(state != StateType.DONE) {
             // Get next character
-            char c = (char)(inFile.read());
+            inFile.mark(0);
+            c = (char)(inFile.read());
             
             
-            System.out.println("state: " + state);
-            System.out.println("c: " + c);
+            //System.out.println("state: " + state);
+            //System.out.println("c: " + c);
             
             // Loop through all possible states
             switch(state){
@@ -71,6 +75,7 @@ public class CMinusScanner implements Scanner {
                     if(Character.isDigit(c)){
                         state = StateType.INNUM;
                     } else if (Character.isLetter(c)){
+                        data += c;
                         state = StateType.INID;
                     } else if (c == '!'){
                         state = StateType.INNOT_EQUAL;
@@ -127,6 +132,10 @@ public class CMinusScanner implements Scanner {
                     if(!Character.isLetter(c)){
                         state = StateType.DONE;
                         currentToken = TokenType.IDENT_TOKEN;
+                        // Back up:
+                        inFile.reset();
+                    } else {
+                        data += c;
                     }
                     break;
                 case INNUM:
@@ -198,8 +207,22 @@ public class CMinusScanner implements Scanner {
                     break;
             }
         }
-       
+        
         Token returnToken = new Token(currentToken);
+        
+        // Check if the identifier is a keyword
+        if(currentToken == TokenType.IDENT_TOKEN){
+            returnToken = switch (data) {
+                case "else" -> new Token(TokenType.ELSE_TOKEN);
+                case "if" -> new Token(TokenType.IF_TOKEN);
+                case "int" -> new Token(TokenType.INT_TOKEN);
+                case "return" -> new Token(TokenType.RETURN_TOKEN);
+                case "void" -> new Token(TokenType.VOID_TOKEN);
+                case "while" -> new Token(TokenType.WHILE_TOKEN);
+                default -> new Token(currentToken, data);
+            };
+        }
+       
         
         //System.out.println("currentToken at end of function:" + currentToken + "\n\n");
         return returnToken;
