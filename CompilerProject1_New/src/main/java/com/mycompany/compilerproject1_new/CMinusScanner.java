@@ -11,13 +11,15 @@ package com.mycompany.compilerproject1_new;
 import com.mycompany.compilerproject1_new.Token.TokenType;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CMinusScanner implements Scanner {
     
     private BufferedReader inFile;
     private Token nextToken;
     
-    public CMinusScanner (BufferedReader file){
+    public CMinusScanner (BufferedReader file) throws IOException {
         inFile = file;
         nextToken = scanToken();
     }
@@ -38,7 +40,8 @@ public class CMinusScanner implements Scanner {
         DONE,
         INID,
         INNUM,
-        INSTART_COMMENT,
+        INDIVIDE,
+        INCOMMENT,
         INEND_COMMENT,
         INLESS,
         INGREATER,
@@ -46,13 +49,13 @@ public class CMinusScanner implements Scanner {
         INNOT_EQUAL,
     }
 
-    public TokenType scanToken() {
-        TokenType currentToken;
+    public Token scanToken() throws IOException {
+        TokenType currentToken = TokenType.ERROR_TOKEN;
         StateType state = StateType.START;
 
         while(state != StateType.DONE) {
             // Get next character
-            char c = (char)inFile.read();
+            char c = (char)(inFile.read());
             
             // Loop through all possible states
             switch(state){
@@ -70,7 +73,7 @@ public class CMinusScanner implements Scanner {
                     } else if (c == '='){
                         state = StateType.INEQUAL;
                     } else if (c == '/'){
-                        state = StateType.INSTART_COMMENT;
+                        state = StateType.INDIVIDE;
                     } else {
                         state = StateType.DONE;
                         switch(c){
@@ -112,7 +115,6 @@ public class CMinusScanner implements Scanner {
                     break;
                 case INID:
                     if(!Character.isLetter(c)){
-                        // ADD: unget next char?
                         state = StateType.DONE;
                         currentToken = TokenType.IDENT_TOKEN;
                     }
@@ -123,18 +125,61 @@ public class CMinusScanner implements Scanner {
                         currentToken = TokenType.NUM_TOKEN;
                     }
                     break;
-                case INSTART_COMMENT:
-                    
+                case INDIVIDE:
+                    if(c == '*'){
+                        state = StateType.INCOMMENT;
+                    } else {
+                        state = StateType.DONE;
+                        currentToken = TokenType.DIVIDE_TOKEN;
+                    }
+                    break;
+                case INCOMMENT:
+                    if(c == '*'){
+                        state = StateType.INEND_COMMENT;
+                    }
                     break;
                 case INEND_COMMENT:
+                    if(c == '/'){
+                        state = StateType.START;
+                    } else {
+                        state = StateType.INCOMMENT;
+                    }
                     break;
                 case INLESS:
+                    state = StateType.DONE;
+                    if(c == '='){
+                        currentToken = TokenType.LESS_EQUAL_TOKEN;
+                    } else {
+                        currentToken = TokenType.LESS_TOKEN;
+                        // ADD: Back up
+                    }
                     break;
                 case INGREATER:
+                    state = StateType.DONE;
+                    if(c == '='){
+                        currentToken = TokenType.GREATER_EQUAL_TOKEN;
+                    } else {
+                        currentToken = TokenType.GREATER_TOKEN;
+                        // ADD: Back up
+                    }
                     break;
                 case INEQUAL:
+                    state = StateType.DONE;
+                    if(c == '='){
+                        currentToken = TokenType.EQUAL_TOKEN;
+                    } else {
+                        currentToken = TokenType.ASSIGN_TOKEN;
+                        // ADD: Back up
+                    }
                     break;
                 case INNOT_EQUAL:
+                    state = StateType.DONE;
+                    if(c == '='){
+                        currentToken = TokenType.NOT_EQUAL_TOKEN;
+                    } else {
+                        currentToken = TokenType.ERROR_TOKEN;
+                        // ADD: Back up
+                    }
                     break;
                 case DONE:
                 default:
@@ -143,6 +188,8 @@ public class CMinusScanner implements Scanner {
                     break;
             }
         }
-        return currentToken;
+       
+        Token returnToken = new Token(currentToken);
+        return returnToken;
     }
 }
