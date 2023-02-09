@@ -20,10 +20,21 @@ public class Main {
         FileReader codeFile = new FileReader(inputFile);
         BufferedReader inputReader = new BufferedReader(codeFile);
         
+        // Scan through the file for tokens
         CMinusScanner myScanner = new CMinusScanner(inputReader);
+        Token nextToken = myScanner.viewNextToken();
+        nextToken = myScanner.getNextToken();
         
-        // Print the C- code's tokens into an output file
-        Token next = myScanner.viewNextToken();
-        next = myScanner.getNextToken();
+        // Get the output file to print into
+        FileWriter outputFile = new FileWriter("src/main/java/com/mycompany/compilerproject1_new/output.txt");
+        
+        // Print the tokens into the output file
+        int debugLoopCount = 5;             // Until we can test for the EOF, it will try printing the first 5 tokens
+        while(debugLoopCount >= 0){
+            outputFile.write(nextToken.toString());
+            debugLoopCount--;
+        }
+        
+        outputFile.close();
     }
 }

@@ -59,11 +59,19 @@ public class Token {
         return tokenType;
     }
     
-    public Object getTokenData(){
+    public Object getData(){
         return tokenData;
     }
     
-    public void printToken (){
-        System.out.println(tokenType + " : " + tokenData);
+    public String toString (){
+        String returnString = "";
+        
+        returnString += tokenType;
+        if(tokenData != null){
+            returnString += tokenData;
+        }
+        returnString += "\n";
+        
+        return returnString;
     }
 }
