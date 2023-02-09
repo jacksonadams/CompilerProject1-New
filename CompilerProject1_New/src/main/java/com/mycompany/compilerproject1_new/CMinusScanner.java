@@ -63,16 +63,20 @@ public class CMinusScanner implements Scanner {
         while(state != StateType.DONE) {
             // Get next character
             inFile.mark(0);
-            c = (char)(inFile.read());
             
-            
-            //System.out.println("state: " + state);
-            //System.out.println("c: " + c);
+            int nextCharAsInt = inFile.read();
+            if(nextCharAsInt == -1){
+                currentToken = TokenType.EOF_TOKEN;
+                break;
+            } else {
+                c = (char)nextCharAsInt;
+            }
             
             // Loop through all possible states
             switch(state){
                 case START:
                     if(Character.isDigit(c)){
+                        data += c;
                         state = StateType.INNUM;
                     } else if (Character.isLetter(c)){
                         data += c;
@@ -123,7 +127,7 @@ public class CMinusScanner implements Scanner {
                                 currentToken = TokenType.LEFT_BRACE_TOKEN;
                                 break;
                             case '}':
-                                currentToken = TokenType.LEFT_BRACE_TOKEN;
+                                currentToken = TokenType.RIGHT_BRACE_TOKEN;
                                 break;
                         }
                     }
@@ -142,6 +146,9 @@ public class CMinusScanner implements Scanner {
                     if(!Character.isDigit(c)){
                         state = StateType.DONE;
                         currentToken = TokenType.NUM_TOKEN;
+                        inFile.reset();
+                    } else {
+                        data += c;
                     }
                     break;
                 case INDIVIDE:
@@ -170,7 +177,7 @@ public class CMinusScanner implements Scanner {
                         currentToken = TokenType.LESS_EQUAL_TOKEN;
                     } else {
                         currentToken = TokenType.LESS_TOKEN;
-                        // ADD: Back up
+                        inFile.reset();
                     }
                     break;
                 case INGREATER:
@@ -179,7 +186,7 @@ public class CMinusScanner implements Scanner {
                         currentToken = TokenType.GREATER_EQUAL_TOKEN;
                     } else {
                         currentToken = TokenType.GREATER_TOKEN;
-                        // ADD: Back up
+                        inFile.reset();
                     }
                     break;
                 case INEQUAL:
@@ -188,7 +195,7 @@ public class CMinusScanner implements Scanner {
                         currentToken = TokenType.EQUAL_TOKEN;
                     } else {
                         currentToken = TokenType.ASSIGN_TOKEN;
-                        // ADD: Back up
+                        inFile.reset();
                     }
                     break;
                 case INNOT_EQUAL:
@@ -197,7 +204,7 @@ public class CMinusScanner implements Scanner {
                         currentToken = TokenType.NOT_EQUAL_TOKEN;
                     } else {
                         currentToken = TokenType.ERROR_TOKEN;
-                        // ADD: Back up
+                        inFile.reset();
                     }
                     break;
                 case DONE:
@@ -212,17 +219,35 @@ public class CMinusScanner implements Scanner {
         
         // Check if the identifier is a keyword
         if(currentToken == TokenType.IDENT_TOKEN){
-            returnToken = switch (data) {
-                case "else" -> new Token(TokenType.ELSE_TOKEN);
-                case "if" -> new Token(TokenType.IF_TOKEN);
-                case "int" -> new Token(TokenType.INT_TOKEN);
-                case "return" -> new Token(TokenType.RETURN_TOKEN);
-                case "void" -> new Token(TokenType.VOID_TOKEN);
-                case "while" -> new Token(TokenType.WHILE_TOKEN);
-                default -> new Token(currentToken, data);
-            };
+            switch(data){
+                case "else":
+                    returnToken = new Token(TokenType.ELSE_TOKEN);
+                    break;
+                case "if":
+                    returnToken = new Token(TokenType.IF_TOKEN);
+                    break;
+                case "return":
+                    returnToken = new Token(TokenType.RETURN_TOKEN);
+                    break;
+                case "void":
+                    returnToken = new Token(TokenType.VOID_TOKEN);
+                    break;
+                case "while":
+                    returnToken = new Token(TokenType.WHILE_TOKEN);
+                    break;
+                case "int":
+                    returnToken = new Token(TokenType.INT_TOKEN);
+                    break;
+            }
         }
-       
+        
+        // If our token is a num or identifier, it needs data
+        if(returnToken.getType() == TokenType.NUM_TOKEN){
+            returnToken.setData(Integer.parseInt(data));
+        }
+        if(returnToken.getType() == TokenType.IDENT_TOKEN){
+            returnToken.setData(data);
+        }
         
         //System.out.println("currentToken at end of function:" + currentToken + "\n\n");
         return returnToken;
