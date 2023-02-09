@@ -1,11 +1,5 @@
 package com.mycompany.compilerproject1_new;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-
-
-
 /**
  *
  * @author Jackson Adams, Scott Gocon
@@ -16,7 +10,7 @@ import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
+import java.io.FileWriter;
 
 public class Main {
         
@@ -30,15 +24,6 @@ public class Main {
         
         // Print the C- code's tokens into an output file
         Token next = myScanner.viewNextToken();
-        while(next.getType() != Token.TokenType.ERROR_TOKEN){
-            
-            PrintStream outputFile = new PrintStream(new File("output.txt"));
-            PrintStream console = System.out;
-            System.setOut(outputFile);
-            
-            next.printToken();
-            
-            next = myScanner.getNextToken();
-        } 
+        next = myScanner.getNextToken();
     }
 }
