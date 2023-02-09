@@ -46,7 +46,7 @@ public class CMinusScanner implements Scanner {
         INNOT_EQUAL,
     }
 
-    public Token scanToken() {
+    public TokenType scanToken() {
         TokenType currentToken;
         StateType state = StateType.START;
 
@@ -54,6 +54,7 @@ public class CMinusScanner implements Scanner {
             // Get next character
             char c = (char)inFile.read();
             
+            // Loop through all possible states
             switch(state){
                 case START:
                     if(Character.isDigit(c)){
@@ -109,7 +110,39 @@ public class CMinusScanner implements Scanner {
                         }
                     }
                     break;
+                case INID:
+                    if(!Character.isLetter(c)){
+                        // ADD: unget next char?
+                        state = StateType.DONE;
+                        currentToken = TokenType.IDENT_TOKEN;
+                    }
+                    break;
+                case INNUM:
+                    if(!Character.isDigit(c)){
+                        state = StateType.DONE;
+                        currentToken = TokenType.NUM_TOKEN;
+                    }
+                    break;
+                case INSTART_COMMENT:
+                    
+                    break;
+                case INEND_COMMENT:
+                    break;
+                case INLESS:
+                    break;
+                case INGREATER:
+                    break;
+                case INEQUAL:
+                    break;
+                case INNOT_EQUAL:
+                    break;
+                case DONE:
+                default:
+                    state = StateType.DONE;
+                    currentToken = TokenType.ERROR_TOKEN;
+                    break;
             }
         }
+        return currentToken;
     }
 }
