@@ -20,22 +20,28 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) throws FileNotFoundException, IOException {
-        // Get the input file that has the C- code
-        File inputFile = new File("src/main/java/com/mycompany/compilerproject1_new/input.txt");
-        FileReader codeFile = new FileReader(inputFile);
-        BufferedReader inputReader = new BufferedReader(codeFile);
+        // The number of input files that we'll feed into the program to scan
+        int inputCount = 2;
         
-        // Scan through the file for tokens
-        CMinusScanner myScanner = new CMinusScanner(inputReader);
-       
-        // Get the output file to print into
-        FileWriter outputFile = new FileWriter("src/main/java/com/mycompany/compilerproject1_new/output.txt"); 
-        Token next = myScanner.getNextToken();
-        while(next.getType() != TokenType.EOF_TOKEN){
-            outputFile.write(next.toString());
-            next = myScanner.getNextToken();
+        // Go through all the input files we have and scan through them
+        for (int i = 1; i <= inputCount; i++){
+            // Get the input file that has the C- code
+            File inputFile = new File("src/main/java/com/mycompany/compilerproject1_new/input" + i + ".txt");
+            FileReader codeFile = new FileReader(inputFile);
+            BufferedReader inputReader = new BufferedReader(codeFile);
+
+            // Scan through the file for tokens
+            CMinusScanner myScanner = new CMinusScanner(inputReader);
+
+            // Get the output file to print into
+            FileWriter outputFile = new FileWriter("src/main/java/com/mycompany/compilerproject1_new/output" + i + ".txt"); 
+            Token next = myScanner.getNextToken();
+            while(next.getType() != TokenType.EOF_TOKEN){
+                outputFile.write(next.toString());
+                next = myScanner.getNextToken();
+            }
+
+            outputFile.close();
         }
-        
-        outputFile.close();
     }
 }
