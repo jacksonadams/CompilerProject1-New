@@ -1,12 +1,11 @@
 /* insertion sort */
-int[] insertionSort ( int[] inputArray, int arrayLength )
-
-    /* C minus does not have for loops */
+int* insertionSort ( int inputArray[], int arrayLength )
+{    /* C minus does not have for loops */
     int i = 1;
     while(i < arrayLength){
         int j = i;
 
-        /* C minus does not have the boolean and operator */
+        /* C- does not have the boolean and operator */
         while(j > 0){
             
             /* Basically acts as the second condition for the while loop */
@@ -18,7 +17,7 @@ int[] insertionSort ( int[] inputArray, int arrayLength )
                 j = j - 1;
             }
 
-            /* C minus also does not have breaks so this forces the while to end */
+            /* C- also does not have breaks so this forces the while to end */
             else {
                 j = 0;
             }
@@ -31,7 +30,7 @@ int[] insertionSort ( int[] inputArray, int arrayLength )
 }
 
 void main( void )
-{   int[] array = [9, 5, 1, 3, 8, 7, 9];
-    array = insertionSort(array, 7);
-    write array;
+{   int array[] = [9, 5, 1, 3, 8, 7, 9];
+    int* sortedArray = insertionSort(array, 7);
+    write sortedArray;
 }

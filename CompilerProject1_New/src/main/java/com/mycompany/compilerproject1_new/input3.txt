@@ -1,0 +1,68 @@
+/* Partition for quick sort */
+int* partition(int inputArray[], int low, int high)
+{   int pivot = inputArray[low];
+
+    int count = 0;
+    int i = low + 1;
+    while(i <= end){
+        if(inputArray[i] <= pivot){
+            count = count + 1;
+        }
+        
+        i = i + 1;
+    }
+    
+    /* Put elements in their correct position */
+    int pivotIndex = start + count;
+    int temp = inputArray[pivotIndex];
+    inputArray[pivotIndex] = inputArray[start];
+    inputArray[start] = temp;
+
+    int i = low;
+    int j = high;
+
+    while(i < pivotIndex){
+        if(j > pivotIndex){
+            while(inputArray[i] <= pivot){
+                i = i + 1;
+            }
+            while(inputArray[j] > pivot){
+                j = j - 1;
+            }
+ 
+            if (i < pivotIndex){
+                if(j > pivotIndex) {
+                    temp = inputArray[i];
+                    inputArray[i] = inputArray[j];
+                    inputArray[j] = temp;
+
+                    i = i + 1;
+                    j = j + 1;
+                }
+            }
+        }
+
+        /* Break out of the while loop */
+        else {
+            j = pivotIndex;
+        }
+    }
+
+    return pivotIndex;
+}
+
+/* Quick sort. Note that arrays are passed by reference in C- */
+void quickSort ( int[] inputArray, int arrayLength, int low, int high )
+{   if(low < high){
+        int partitionIndex = partition(inputArray, low, high);
+
+        quickSort(inputArray, low, partitionIndex - 1);
+        quickSort(inputArray, partitionIndex + 1, high);
+    }
+}
+
+void main( void )
+{   int array[] = [2, 8, 6, 7, 3, 7, 5, 8];
+    quickSort(array, 8, 0, 7);
+    write array;
+}

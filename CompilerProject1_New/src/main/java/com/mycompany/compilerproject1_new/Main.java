@@ -21,7 +21,7 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) throws FileNotFoundException, IOException {
         // The number of input files that we'll feed into the program to scan
-        int inputCount = 2;
+        int inputCount = 3;
         
         // Go through all the input files we have and scan through them
         for (int i = 1; i <= inputCount; i++){
