@@ -1,15 +1,26 @@
 /* insertion sort */
-int insertionSort ( int[] inputArray, int arrayLength )
+int[] insertionSort ( int[] inputArray, int arrayLength )
 
     /* C minus does not have for loops */
     int i = 1;
     while(i < arrayLength){
         int j = i;
 
+        /* C minus does not have the boolean and operator */
         while(j > 0){
+            
+            /* Basically acts as the second condition for the while loop */
             if(inputArray[j - 1] > inputArray[j]){
+                int temp = inputArray[j];
                 inputArray[j] = inputArray[j - 1];
+                inputArray[j - 1] = temp;
+
                 j = j - 1;
+            }
+
+            /* C minus also does not have breaks so this forces the while to end */
+            else {
+                j = 0;
             }
         }
 
