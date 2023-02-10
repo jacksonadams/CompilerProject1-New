@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.compilerproject1_new;
 
 /**
@@ -51,8 +47,9 @@ public class CMinusScanner implements Scanner {
         INGREATER,
         INEQUAL,
         INNOT_EQUAL,
+        INERROR
     }
-
+    
     public Token scanToken() throws IOException {
         TokenType currentToken = TokenType.ERROR_TOKEN;
         StateType state = StateType.START;
@@ -61,16 +58,12 @@ public class CMinusScanner implements Scanner {
         String data = "";
 
         while(state != StateType.DONE) {
-            // Get next character
-            inFile.mark(0);
+            // Mark place before moving
+            inFile.mark(1);
             
-            int nextCharAsInt = inFile.read();
-            if(nextCharAsInt == -1){
-                currentToken = TokenType.EOF_TOKEN;
-                break;
-            } else {
-                c = (char)nextCharAsInt;
-            }
+            // Get next character, place as c
+            int charValue = inFile.read();
+            c = (char)charValue;
             
             // Loop through all possible states
             switch(state){
@@ -91,6 +84,9 @@ public class CMinusScanner implements Scanner {
                         state = StateType.INEQUAL;
                     } else if (c == '/'){
                         state = StateType.INDIVIDE;
+                    } else if (charValue == -1){
+                        currentToken = TokenType.EOF_TOKEN;
+                        state = StateType.DONE;
                     } else if (c == ' ' || c == '\t' || c == '\n'){
                         // nothing
                     } else {
@@ -133,22 +129,25 @@ public class CMinusScanner implements Scanner {
                     }
                     break;
                 case INID:
-                    if(!Character.isLetter(c)){
+                    if(Character.isLetter(c)){
+                        data += c;
+                    } else if (Character.isDigit(c)){
+                        state = StateType.INERROR;
+                    } else {
                         state = StateType.DONE;
                         currentToken = TokenType.IDENT_TOKEN;
-                        // Back up:
                         inFile.reset();
-                    } else {
-                        data += c;
                     }
                     break;
                 case INNUM:
-                    if(!Character.isDigit(c)){
+                    if(Character.isDigit(c)){
+                        data += c;
+                    } else if (Character.isLetter(c)){
+                        state = StateType.INERROR;
+                    } else {
                         state = StateType.DONE;
                         currentToken = TokenType.NUM_TOKEN;
                         inFile.reset();
-                    } else {
-                        data += c;
                     }
                     break;
                 case INDIVIDE:
@@ -157,6 +156,7 @@ public class CMinusScanner implements Scanner {
                     } else {
                         state = StateType.DONE;
                         currentToken = TokenType.DIVIDE_TOKEN;
+                        inFile.reset();
                     }
                     break;
                 case INCOMMENT:
@@ -178,7 +178,7 @@ public class CMinusScanner implements Scanner {
                     } else {
                         currentToken = TokenType.LESS_TOKEN;
                         inFile.reset();
-                    }
+                    } 
                     break;
                 case INGREATER:
                     state = StateType.DONE;
@@ -196,7 +196,7 @@ public class CMinusScanner implements Scanner {
                     } else {
                         currentToken = TokenType.ASSIGN_TOKEN;
                         inFile.reset();
-                    }
+                    } 
                     break;
                 case INNOT_EQUAL:
                     state = StateType.DONE;
@@ -205,6 +205,12 @@ public class CMinusScanner implements Scanner {
                     } else {
                         currentToken = TokenType.ERROR_TOKEN;
                         inFile.reset();
+                    }
+                    break;
+                case INERROR:
+                    if(c == ' ' || c == '\n' || c == '\t'){
+                        state = StateType.DONE;
+                        currentToken = TokenType.ERROR_TOKEN;
                     }
                     break;
                 case DONE:
@@ -249,7 +255,6 @@ public class CMinusScanner implements Scanner {
             returnToken.setData(data);
         }
         
-        //System.out.println("currentToken at end of function:" + currentToken + "\n\n");
         return returnToken;
     }
 }
