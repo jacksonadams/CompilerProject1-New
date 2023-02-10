@@ -7,7 +7,7 @@ package com.mycompany.compilerproject1_new;
 
 /**
  *
- * @author jacksonadams
+ * @author Jackson Adams and Scott Gocon
  */
 
 import com.mycompany.compilerproject1_new.Token.TokenType;
@@ -21,7 +21,8 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) throws FileNotFoundException, IOException {
         // The number of input files that we'll feed into the program to scan
-        int inputCount = 3;
+        int inputCount = 5;
+        System.out.println("Hello World");
         
         // Go through all the input files we have and scan through them
         for (int i = 1; i <= inputCount; i++){
@@ -40,8 +41,9 @@ public class Main {
                 outputFile.write(next.toString());
                 next = myScanner.getNextToken();
             }
-
+            
             outputFile.close();
+            
         }
     }
 }
